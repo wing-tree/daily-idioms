@@ -1,0 +1,210 @@
+package com.wing.tree.bruni.daily.idioms.quiz.view
+
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.with
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import com.wing.tree.bruni.daily.idioms.R
+import com.wing.tree.bruni.daily.idioms.domain.extension.float
+import com.wing.tree.bruni.daily.idioms.quiz.model.Question
+import com.wing.tree.bruni.daily.idioms.quiz.state.QuestionState
+import com.wing.tree.bruni.daily.idioms.quiz.state.QuizState
+
+@Composable
+internal fun Progress(
+    modifier: Modifier,
+    progress: QuizState.Progress,
+    onBackPressed: () -> Unit,
+    onDoneClick: () -> Unit
+) {
+    when(progress) {
+        is QuizState.Progress.Loading -> Unit
+        is QuizState.Progress.Content -> ProgressContent(
+            modifier = modifier,
+            content = progress,
+            onBackPressed = onBackPressed,
+            onDoneClick = onDoneClick
+        )
+        is QuizState.Progress.Error -> Unit
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
+@Composable
+private fun ProgressContent(
+    modifier: Modifier,
+    content: QuizState.Progress.Content,
+    onBackPressed: () -> Unit,
+    onDoneClick: () -> Unit
+) {
+    val questionState = remember(content.currentIndex) {
+        content.currentQuestionState
+    }
+
+    Surface(modifier = modifier) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    content = content,
+                    onBackPressed = onBackPressed
+                )
+            },
+            content = { innerPadding ->
+                AnimatedContent(
+                    targetState = questionState,
+                    transitionSpec = {
+                        val direction =
+                            if (targetState.index > initialState.index) {
+                                AnimatedContentScope.SlideDirection.Left
+                            } else {
+                                AnimatedContentScope.SlideDirection.Right
+                            }
+                        slideIntoContainer(
+                            towards = direction,
+                            animationSpec = tween()
+                        ) with slideOutOfContainer(
+                            towards = direction,
+                            animationSpec = tween()
+                        )
+                    }
+                ) { targetState ->
+                    Question(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding),
+                        question = targetState.question,
+                        answer = targetState.answer,
+                        onOptionSelected = { which ->
+                            targetState.answer = which
+                        }
+                    )
+                }
+            },
+            bottomBar = {
+                BottomBar(
+                    questionState = questionState,
+                    onPreviousClick = { content.currentIndex-- },
+                    onNextClick = { content.currentIndex++ },
+                    onDoneClick = onDoneClick
+                )
+            }
+        )
+    }
+}
+
+@Composable
+private fun TopAppBar(
+    content: QuizState.Progress.Content,
+    onBackPressed: () -> Unit
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        val progress by animateFloatAsState(
+            targetValue = content.currentIndex.inc() / content.count.float,
+            animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+        )
+
+        LinearProgressIndicator(progress = progress)
+    }
+}
+
+@Composable
+private fun Question(
+    modifier: Modifier,
+    question: Question,
+    answer: Int?,
+    onOptionSelected: (Int) -> Unit
+) {
+    Column(modifier = modifier) {
+        Text(text = question.text)
+
+        question.options.forEachIndexed { index, option ->
+            Option(
+                modifier = Modifier,
+                index = index,
+                option = option,
+                selected = answer == index
+            ) {
+                onOptionSelected(index)
+            }
+        }
+    }
+}
+
+@Composable
+private fun Option(
+    modifier: Modifier,
+    index: Int,
+    option: String,
+    selected: Boolean,
+    onClick: (Int) -> Unit
+) {
+    val color = if (selected) Color.Blue else Color.Gray
+
+    Surface(
+        modifier = modifier.clickable {
+            onClick(index)
+        },
+        color = color
+    ) {
+        Text(text = option)
+    }
+}
+
+@Composable
+private fun BottomBar(
+    questionState: QuestionState,
+    onPreviousClick: () -> Unit,
+    onNextClick: () -> Unit,
+    onDoneClick: () -> Unit
+) {
+    Surface(modifier = Modifier.fillMaxWidth()) {
+        Row(modifier = Modifier.fillMaxWidth()) {
+            if (questionState.isPreviousVisible) {
+                OutlinedButton(
+                    modifier = Modifier
+                        .weight(1.0F)
+                        .height(48.dp),
+                    onClick = onPreviousClick
+                ) {
+                    Text(text = stringResource(id = R.string.previous))
+                }
+
+                Spacer(modifier = Modifier.width(16.dp))
+            }
+
+            if (questionState.isDoneVisible) {
+                Button(
+                    modifier = Modifier
+                        .weight(1.0F)
+                        .height(48.dp),
+                    onClick = onDoneClick,
+                    enabled = questionState.isNextEnabled
+                ) {
+                    Text(text = stringResource(id = R.string.done))
+                }
+            } else {
+                Button(
+                    modifier = Modifier
+                        .weight(1.0F)
+                        .height(48.dp),
+                    onClick = onNextClick,
+                    enabled = questionState.isNextEnabled
+                ) {
+                    Text(text = stringResource(id = R.string.next))
+                }
+            }
+        }
+    }
+}

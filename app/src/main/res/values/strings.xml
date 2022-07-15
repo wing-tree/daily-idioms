@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Daily Idioms</string>
+
+    <string name="all_idioms">모든 사자성어</string>
+    <string name="civil_service_examination_idioms">공무원 사자성어</string>
+    <string name="done">완료</string>
+    <string name="my_idioms">내 사자성어</string>
+    <string name="next">다음</string>
+    <string name="previous">이전</string>
+    <string name="quiz">퀴즈</string>
+    <string name="sat_idioms">수능 사자성어</string>
+</resources>
