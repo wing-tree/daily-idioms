@@ -29,7 +29,7 @@
         android:label="IdiomFragment" >
         <argument
             android:name="category"
-            app:argType="com.wing.tree.bruni.daily.idioms.enum.Category" />
+            app:argType="com.wing.tree.bruni.daily.idioms.constant.Category" />
     </fragment>
     <fragment
         android:id="@+id/quizFragment"
@@ -37,7 +37,7 @@
         android:label="QuizFragment" >
         <argument
             android:name="category"
-            app:argType="com.wing.tree.bruni.daily.idioms.enum.Category" />
+            app:argType="com.wing.tree.bruni.daily.idioms.constant.Category" />
         <argument
             android:name="count"
             app:argType="integer" />
