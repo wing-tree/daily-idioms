@@ -1,4 +1,4 @@
-package com.wing.tree.bruni.daily.idioms.enum
+package com.wing.tree.bruni.daily.idioms.constant
 
 enum class Category {
     All,
