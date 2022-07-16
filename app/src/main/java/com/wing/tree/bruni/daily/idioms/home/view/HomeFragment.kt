@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.wing.tree.bruni.daily.idioms.R
-import com.wing.tree.bruni.daily.idioms.enum.Category.*
+import com.wing.tree.bruni.daily.idioms.constant.Category.*
 import com.wing.tree.bruni.daily.idioms.ui.theme.DailyIdiomsTheme
 
 class HomeFragment : Fragment() {

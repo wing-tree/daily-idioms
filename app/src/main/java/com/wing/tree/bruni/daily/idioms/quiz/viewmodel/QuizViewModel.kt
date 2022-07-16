@@ -3,6 +3,7 @@ package com.wing.tree.bruni.daily.idioms.quiz.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.wing.tree.bruni.daily.idioms.constant.Category
 import com.wing.tree.bruni.daily.idioms.constant.Key
 import com.wing.tree.bruni.daily.idioms.constant.OPTION_COUNT
 import com.wing.tree.bruni.daily.idioms.constant.ZERO
@@ -10,7 +11,6 @@ import com.wing.tree.bruni.daily.idioms.domain.extension.notZero
 import com.wing.tree.bruni.daily.idioms.domain.model.Idiom
 import com.wing.tree.bruni.daily.idioms.domain.repository.IdiomRepository
 import com.wing.tree.bruni.daily.idioms.domain.repository.QuestionRepository
-import com.wing.tree.bruni.daily.idioms.enum.Category
 import com.wing.tree.bruni.daily.idioms.quiz.model.Question
 import com.wing.tree.bruni.daily.idioms.quiz.state.QuestionState
 import com.wing.tree.bruni.daily.idioms.quiz.state.QuizState
