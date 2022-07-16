@@ -25,18 +25,25 @@ import com.wing.tree.bruni.daily.idioms.idiom.state.IdiomState
 internal fun Idioms(
     modifier: Modifier,
     state: IdiomState,
+    queryText: String,
     onIconButtonClick: (Idiom) -> Unit
 ) {
     when(state) {
         is IdiomState.Loading -> Unit
-        is IdiomState.Content -> IdiomContent(
-            modifier = modifier,
-            idioms = state.idioms,
-            onIconButtonClick = onIconButtonClick
-        )
-        is IdiomState.Error -> {
+        is IdiomState.Content -> {
+            val idioms = if (queryText.isNotBlank()) {
+                state.idioms.filter { it.koreanCharacters.contains(queryText) }
+            } else {
+                state.idioms
+            }
 
+            IdiomContent(
+                modifier = modifier,
+                idioms = idioms,
+                onIconButtonClick = onIconButtonClick
+            )
         }
+        is IdiomState.Error -> Unit
     }
 }
 
