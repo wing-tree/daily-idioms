@@ -3,6 +3,7 @@ package com.wing.tree.bruni.daily.idioms.idiom.view
 import androidx.compose.animation.VectorConverter
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -39,6 +40,7 @@ internal fun Idioms(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun IdiomContent(
     modifier: Modifier,
@@ -48,7 +50,7 @@ private fun IdiomContent(
     LazyColumn(modifier = modifier) {
         items(idioms) { idiom ->
             Idiom(
-                modifier = Modifier,
+                modifier = Modifier.animateItemPlacement(),
                 idiom = idiom,
                 onIconButtonClick = onIconButtonClick
             )
