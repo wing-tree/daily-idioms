@@ -11,10 +11,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.wing.tree.bruni.daily.idioms.constant.EMPTY
 import com.wing.tree.bruni.daily.idioms.idiom.viewmodel.IdiomViewModel
 import com.wing.tree.bruni.daily.idioms.popBackStack
 import com.wing.tree.bruni.daily.idioms.ui.theme.DailyIdiomsTheme
@@ -33,6 +36,7 @@ class IdiomFragment : Fragment() {
         return ComposeView(requireActivity()).apply {
             setContent {
                 val state by viewModel.state.collectAsState()
+                var queryText by mutableStateOf(EMPTY)
 
                 DailyIdiomsTheme {
                     Surface {
@@ -40,7 +44,12 @@ class IdiomFragment : Fragment() {
                             topBar = {
                                 TopSearchBar(
                                     state = state,
-                                    onQueryTextChanged = {  },
+                                    onQueryTextChanged = { queryText = it },
+                                    onTextFieldVisibilityChanged = { isTextFieldVisible ->
+                                        if (isTextFieldVisible) {
+                                            queryText = EMPTY
+                                        }
+                                    },
                                     onBackPressed = { popBackStack() }
                                 )
                             }
@@ -50,6 +59,7 @@ class IdiomFragment : Fragment() {
                                     .fillMaxSize()
                                     .padding(paddingValues),
                                 state = state,
+                                queryText = queryText,
                                 onIconButtonClick = { idiom ->
                                     viewModel.updateMy(idiom)
                                 }
