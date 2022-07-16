@@ -38,8 +38,9 @@ class IdiomFragment : Fragment() {
                     Surface {
                         Scaffold(
                             topBar = {
-                                TopBar(
+                                TopSearchBar(
                                     state = state,
+                                    onQueryTextChanged = {  },
                                     onBackPressed = { popBackStack() }
                                 )
                             }
