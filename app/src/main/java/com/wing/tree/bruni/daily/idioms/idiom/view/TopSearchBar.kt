@@ -41,20 +41,30 @@ import com.wing.tree.bruni.daily.idioms.idiom.state.IdiomState
 internal fun TopSearchBar(
     state: IdiomState,
     onQueryTextChanged: (String) -> Unit,
+    onTextFieldVisibilityChanged: (isTextFieldVisible: Boolean) -> Unit,
     onBackPressed: () -> Unit
 ) {
     val delayMillis = 240
     val focusRequester = remember { FocusRequester() }
     val localSoftwareKeyboardController = LocalSoftwareKeyboardController.current
     val keyboardState by keyboardAsState()
-    var isTextFieldVisible  by mutableStateOf(false)
+    var isTextFieldVisible by mutableStateOf(false)
     var isFocused by mutableStateOf(false)
     var queryText by mutableStateOf(EMPTY)
+
+    fun setTextFieldVisible(value: Boolean) {
+        if (value) {
+            queryText = EMPTY
+        }
+
+        isTextFieldVisible = value
+        onTextFieldVisibilityChanged(isTextFieldVisible)
+    }
 
     BackHandler(true) {
         if (isTextFieldVisible) {
             when(keyboardState) {
-                Keyboard.Hidden -> isTextFieldVisible = false
+                Keyboard.Hidden -> setTextFieldVisible(false)
                 else -> return@BackHandler
             }
         } else {
@@ -84,7 +94,7 @@ internal fun TopSearchBar(
             IconButton(
                 onClick = {
                     if (isTextFieldVisible) {
-                        isTextFieldVisible = false
+                        setTextFieldVisible(false)
                     } else {
                         onBackPressed()
                     }
@@ -171,11 +181,7 @@ internal fun TopSearchBar(
                         modifier = Modifier,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        IconButton(
-                            onClick = {
-                                isTextFieldVisible = true
-                            }
-                        ) {
+                        IconButton(onClick = { setTextFieldVisible(true) }) {
                             Icon(
                                 imageVector = Icons.Rounded.Search,
                                 contentDescription = null,
