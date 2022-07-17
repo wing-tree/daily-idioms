@@ -64,17 +64,17 @@ private fun ProgressContent(
                 AnimatedContent(
                     targetState = questionState,
                     transitionSpec = {
-                        val direction =
+                        val towards =
                             if (targetState.index > initialState.index) {
                                 AnimatedContentScope.SlideDirection.Left
                             } else {
                                 AnimatedContentScope.SlideDirection.Right
                             }
                         slideIntoContainer(
-                            towards = direction,
+                            towards = towards,
                             animationSpec = tween()
                         ) with slideOutOfContainer(
-                            towards = direction,
+                            towards = towards,
                             animationSpec = tween()
                         )
                     }
