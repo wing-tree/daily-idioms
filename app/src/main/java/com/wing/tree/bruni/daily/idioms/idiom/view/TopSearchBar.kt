@@ -44,7 +44,7 @@ internal fun TopSearchBar(
     onTextFieldVisibilityChanged: (isTextFieldVisible: Boolean) -> Unit,
     onBackPressed: () -> Unit
 ) {
-    val delayMillis = 240
+    val delayMillis = 200
     val focusRequester = remember { FocusRequester() }
     val localSoftwareKeyboardController = LocalSoftwareKeyboardController.current
     val keyboardState by keyboardAsState()
