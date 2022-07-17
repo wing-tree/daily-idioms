@@ -28,7 +28,7 @@ class QuizFragment : Fragment() {
 
                 Quiz(
                     state = state,
-                    viewModel = viewModel,
+                    onDoneClick = { viewModel.score(it) },
                     onBackPressed = { popBackStack() }
                 )
             }
