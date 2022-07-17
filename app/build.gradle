@@ -85,6 +85,4 @@ dependencies {
 
     implementation "com.google.dagger:hilt-android:2.39.1"
     kapt "com.google.dagger:hilt-android-compiler:2.39.1"
-
-    implementation "org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5"
 }
