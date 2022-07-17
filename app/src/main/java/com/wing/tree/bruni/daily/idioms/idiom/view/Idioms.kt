@@ -19,6 +19,8 @@ import androidx.compose.ui.unit.dp
 import com.wing.tree.bruni.daily.idioms.R
 import com.wing.tree.bruni.daily.idioms.constant.NEWLINE
 import com.wing.tree.bruni.daily.idioms.domain.model.Idiom
+import com.wing.tree.bruni.daily.idioms.idiom.HangulInitialConsonant.hangulInitialConsonant
+import com.wing.tree.bruni.daily.idioms.idiom.HangulInitialConsonant.isHangulConsonant
 import com.wing.tree.bruni.daily.idioms.idiom.state.IdiomState
 
 @Composable
@@ -31,15 +33,9 @@ internal fun Idioms(
     when(state) {
         is IdiomState.Loading -> Unit
         is IdiomState.Content -> {
-            val idioms = if (queryText.isNotBlank()) {
-                state.idioms.filter { it.koreanCharacters.contains(queryText) }
-            } else {
-                state.idioms
-            }
-
             IdiomContent(
                 modifier = modifier,
-                idioms = idioms,
+                idioms = filter(state.idioms, queryText),
                 onIconButtonClick = onIconButtonClick
             )
         }
@@ -139,4 +135,27 @@ private fun Idiom(
         Text(text = idiom.description)
         Text(text = chineseMeaningsText)
     }
+}
+
+private fun filter(idioms: List<Idiom>, queryText: String) = when {
+    queryText.isNotBlank() -> {
+        if (queryText.all { it.isHangulConsonant }) {
+            idioms.filter {
+                it.koreanCharacters
+                    .hangulInitialConsonant
+                    .contains(queryText.hangulInitialConsonant)
+            }.sortedBy {
+                it.koreanCharacters
+                    .hangulInitialConsonant
+                    .indexOf(queryText.hangulInitialConsonant)
+            }
+        } else {
+            idioms.filter {
+                it.koreanCharacters.contains(queryText)
+            }.sortedBy {
+                it.koreanCharacters.indexOf(queryText)
+            }
+        }
+    }
+    else -> idioms
 }
