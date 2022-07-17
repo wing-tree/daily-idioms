@@ -1,6 +1,6 @@
 package com.wing.tree.bruni.daily.idioms.idiom
 
-internal object HangulJamoSeparator {
+internal object HangulJamo {
     private const val HANGUL_SYLLABLES_START = 44032
 
     private const val MEDIAL_COUNT = 21
