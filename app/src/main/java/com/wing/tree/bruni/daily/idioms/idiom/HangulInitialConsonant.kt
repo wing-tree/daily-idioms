@@ -1,12 +1,14 @@
 package com.wing.tree.bruni.daily.idioms.idiom
 
-object HangulInitialConsonant {
+import com.wing.tree.bruni.daily.idioms.domain.extension.char
+
+internal object HangulInitialConsonant {
     private const val HANGUL_SYLLABLES_START = 44032
     private const val HANGUL_SYLLABLES_END = 55203
 
     private const val LETTER_COUNT_PER_HANGUL_INITIAL_CONSONANT = 588
 
-    private val hangulConsonants = charArrayOf(
+    private val initialConsonant = charArrayOf(
         'ㄱ', 'ㄲ', 'ㄴ', 'ㄷ',
         'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ',
         'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ',
@@ -14,10 +16,9 @@ object HangulInitialConsonant {
         'ㅌ', 'ㅍ', 'ㅎ'
     )
 
-    private val Int.char: Char get() = toChar()
     private val String.code: IntArray get() = IntArray(length) { get(it).code }
 
-    val Char.isHangulConsonant: Boolean get() = hangulConsonants.contains(this)
+    val Char.isHangulConsonant: Boolean get() = initialConsonant.contains(this)
 
     val String.hangulInitialConsonant: String get() = buildString {
         code.forEach {
@@ -26,7 +27,7 @@ object HangulInitialConsonant {
                     .minus(HANGUL_SYLLABLES_START)
                     .div(LETTER_COUNT_PER_HANGUL_INITIAL_CONSONANT)
 
-                append(hangulConsonants[index])
+                append(initialConsonant[index])
             } else {
                 append(it.char)
             }
