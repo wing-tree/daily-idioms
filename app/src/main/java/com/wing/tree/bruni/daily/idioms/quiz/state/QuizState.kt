@@ -7,9 +7,7 @@ import androidx.compose.runtime.setValue
 sealed interface QuizState {
     sealed interface Progress : QuizState {
         object Loading : Progress
-        data class Content(
-            val questionsState: List<QuestionState>
-        ) : Progress {
+        data class Content(val questionsState: List<QuestionState>) : Progress {
             val count = questionsState.count()
             val currentQuestionState: QuestionState get() = questionsState[currentIndex]
             var currentIndex by mutableStateOf(0)
@@ -20,7 +18,7 @@ sealed interface QuizState {
 
     sealed interface Result : QuizState {
         object Loading : Result
-        object Content : Result
+        data class Content(val questionsState: List<QuestionState>) : Result
         data class Error(val throwable: Throwable): Result
     }
 }
