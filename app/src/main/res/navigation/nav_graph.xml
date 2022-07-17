@@ -39,7 +39,7 @@
             android:name="category"
             app:argType="com.wing.tree.bruni.daily.idioms.constant.Category" />
         <argument
-            android:name="count"
+            android:name="question_count"
             app:argType="integer" />
     </fragment>
 </navigation>
