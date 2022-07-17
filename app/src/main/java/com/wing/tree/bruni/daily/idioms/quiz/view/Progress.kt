@@ -1,23 +1,22 @@
 package com.wing.tree.bruni.daily.idioms.quiz.view
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedContentScope
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.*
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.with
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.wing.tree.bruni.daily.idioms.R
 import com.wing.tree.bruni.daily.idioms.domain.extension.float
+import com.wing.tree.bruni.daily.idioms.domain.extension.half
 import com.wing.tree.bruni.daily.idioms.quiz.model.Question
 import com.wing.tree.bruni.daily.idioms.quiz.state.QuestionState
 import com.wing.tree.bruni.daily.idioms.quiz.state.QuizState
@@ -153,9 +152,7 @@ private fun Option(
     val color = if (selected) Color.Blue else Color.Gray
 
     Surface(
-        modifier = modifier.clickable {
-            onClick(index)
-        },
+        modifier = modifier.clickable { onClick(index) },
         color = color
     ) {
         Text(text = option)
@@ -170,18 +167,25 @@ private fun BottomBar(
     onDoneClick: () -> Unit
 ) {
     Surface(modifier = Modifier.fillMaxWidth()) {
-        Row(modifier = Modifier.fillMaxWidth()) {
-            if (questionState.isPreviousVisible) {
-                OutlinedButton(
-                    modifier = Modifier
-                        .weight(1.0F)
-                        .height(48.dp),
-                    onClick = onPreviousClick
-                ) {
-                    Text(text = stringResource(id = R.string.previous))
-                }
+        val localDensity = LocalDensity.current
+        var size by remember { mutableStateOf(IntSize.Zero) }
 
-                Spacer(modifier = Modifier.width(16.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .onSizeChanged { size = it }
+        ) {
+            val width = with(localDensity) { size.width.half.toDp() }
+
+            AnimatedVisibility(visible = questionState.isPreviousVisible) {
+                Row(modifier = Modifier.width(width)) {
+                    OutlinedButton(
+                        modifier = Modifier.weight(1.0F).height(48.dp),
+                        onClick = onPreviousClick
+                    ) {
+                        Text(text = stringResource(id = R.string.previous))
+                    }
+                }
             }
 
             if (questionState.isDoneVisible) {
