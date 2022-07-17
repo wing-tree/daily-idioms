@@ -26,7 +26,7 @@ internal fun Progress(
     modifier: Modifier,
     progress: QuizState.Progress,
     onBackPressed: () -> Unit,
-    onDoneClick: () -> Unit
+    onDoneClick: (QuizState.Progress.Content) -> Unit
 ) {
     when(progress) {
         is QuizState.Progress.Loading -> Unit
@@ -34,7 +34,7 @@ internal fun Progress(
             modifier = modifier,
             content = progress,
             onBackPressed = onBackPressed,
-            onDoneClick = onDoneClick
+            onDoneClick = { onDoneClick(progress) }
         )
         is QuizState.Progress.Error -> Unit
     }
