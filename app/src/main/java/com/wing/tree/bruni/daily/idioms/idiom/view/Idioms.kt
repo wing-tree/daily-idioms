@@ -21,6 +21,7 @@ import com.wing.tree.bruni.daily.idioms.constant.NEWLINE
 import com.wing.tree.bruni.daily.idioms.domain.model.Idiom
 import com.wing.tree.bruni.daily.idioms.idiom.HangulInitialConsonant.hangulInitialConsonant
 import com.wing.tree.bruni.daily.idioms.idiom.HangulInitialConsonant.isHangulConsonant
+import com.wing.tree.bruni.daily.idioms.idiom.HangulJamoSeparator.jamo
 import com.wing.tree.bruni.daily.idioms.idiom.state.IdiomState
 
 @Composable
@@ -151,9 +152,9 @@ private fun filter(idioms: List<Idiom>, queryText: String) = when {
             }
         } else {
             idioms.filter {
-                it.koreanCharacters.contains(queryText)
+                it.koreanCharacters.jamo.contains(queryText.jamo)
             }.sortedBy {
-                it.koreanCharacters.indexOf(queryText)
+                it.koreanCharacters.jamo.indexOf(queryText.jamo)
             }
         }
     }
