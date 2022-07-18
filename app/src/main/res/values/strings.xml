@@ -3,7 +3,9 @@
 
     <string name="all_idioms">모든 사자성어</string>
     <string name="civil_service_examination_idioms">공무원 사자성어</string>
+    <string name="commentary">해설</string>
     <string name="done">완료</string>
+    <string name="home">홈</string>
     <string name="my_idioms">내 사자성어</string>
     <string name="next">다음</string>
     <string name="previous">이전</string>
