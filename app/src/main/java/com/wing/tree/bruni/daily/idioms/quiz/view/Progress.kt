@@ -93,6 +93,7 @@ private fun ProgressContent(
         },
         bottomBar = {
             BottomBar(
+                modifier = Modifier.fillMaxWidth(),
                 questionState = questionState,
                 onPreviousClick = { content.currentIndex-- },
                 onNextClick = { content.currentIndex++ },
@@ -160,12 +161,13 @@ private fun Option(
 
 @Composable
 private fun BottomBar(
+    modifier: Modifier,
     questionState: QuestionState,
     onPreviousClick: () -> Unit,
     onNextClick: () -> Unit,
     onDoneClick: () -> Unit
 ) {
-    Surface(modifier = Modifier.fillMaxWidth()) {
+    Surface(modifier = modifier) {
         val localDensity = LocalDensity.current
         var size by remember { mutableStateOf(IntSize.Zero) }
 
