@@ -18,7 +18,21 @@ sealed interface QuizState {
 
     sealed interface Result : QuizState {
         object Loading : Result
-        data class Content(val questionsState: List<QuestionState>) : Result
+        data class Content(
+            val resultsState: List<ResultState>,
+            val score: Float
+        ) : Result
         data class Error(val throwable: Throwable): Result
+    }
+
+    sealed interface Commentary : QuizState {
+        object Loading : Commentary
+        data class Content(val questionsState: List<QuestionState>) : Commentary {
+            val count = questionsState.count()
+            val currentQuestionState: QuestionState get() = questionsState[currentIndex]
+            var currentIndex by mutableStateOf(0)
+        }
+
+        data class Error(val throwable: Throwable): Commentary
     }
 }
