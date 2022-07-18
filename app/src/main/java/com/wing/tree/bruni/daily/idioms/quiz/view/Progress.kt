@@ -52,55 +52,54 @@ private fun ProgressContent(
         content.currentQuestionState
     }
 
-    Surface(modifier = modifier) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    content = content,
-                    onBackPressed = onBackPressed
-                )
-            },
-            content = { innerPadding ->
-                AnimatedContent(
-                    targetState = questionState,
-                    transitionSpec = {
-                        val towards =
-                            if (targetState.index > initialState.index) {
-                                AnimatedContentScope.SlideDirection.Left
-                            } else {
-                                AnimatedContentScope.SlideDirection.Right
-                            }
-                        slideIntoContainer(
-                            towards = towards,
-                            animationSpec = tween()
-                        ) with slideOutOfContainer(
-                            towards = towards,
-                            animationSpec = tween()
-                        )
-                    }
-                ) { targetState ->
-                    Question(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding),
-                        question = targetState.question,
-                        answer = targetState.answer,
-                        onOptionSelected = { which ->
-                            targetState.answer = which
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                content = content,
+                onBackPressed = onBackPressed
+            )
+        },
+        modifier = modifier,
+        content = { innerPadding ->
+            AnimatedContent(
+                targetState = questionState,
+                transitionSpec = {
+                    val towards =
+                        if (targetState.index > initialState.index) {
+                            AnimatedContentScope.SlideDirection.Left
+                        } else {
+                            AnimatedContentScope.SlideDirection.Right
                         }
+                    slideIntoContainer(
+                        towards = towards,
+                        animationSpec = tween()
+                    ) with slideOutOfContainer(
+                        towards = towards,
+                        animationSpec = tween()
                     )
                 }
-            },
-            bottomBar = {
-                BottomBar(
-                    questionState = questionState,
-                    onPreviousClick = { content.currentIndex-- },
-                    onNextClick = { content.currentIndex++ },
-                    onDoneClick = onDoneClick
+            ) { targetState ->
+                Question(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    question = targetState.question,
+                    answer = targetState.answer,
+                    onOptionSelected = { which ->
+                        targetState.answer = which
+                    }
                 )
             }
-        )
-    }
+        },
+        bottomBar = {
+            BottomBar(
+                questionState = questionState,
+                onPreviousClick = { content.currentIndex-- },
+                onNextClick = { content.currentIndex++ },
+                onDoneClick = onDoneClick
+            )
+        }
+    )
 }
 
 @Composable
