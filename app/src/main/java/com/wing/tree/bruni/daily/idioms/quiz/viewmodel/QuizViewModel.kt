@@ -11,6 +11,8 @@ import com.wing.tree.bruni.daily.idioms.domain.extension.notZero
 import com.wing.tree.bruni.daily.idioms.domain.model.Idiom
 import com.wing.tree.bruni.daily.idioms.domain.repository.IdiomRepository
 import com.wing.tree.bruni.daily.idioms.domain.repository.QuestionRepository
+import com.wing.tree.bruni.daily.idioms.quiz.delegate.QuestionGenerator
+import com.wing.tree.bruni.daily.idioms.quiz.delegate.QuestionGeneratorImpl
 import com.wing.tree.bruni.daily.idioms.quiz.model.Question
 import com.wing.tree.bruni.daily.idioms.quiz.state.QuestionState
 import com.wing.tree.bruni.daily.idioms.quiz.state.QuizState
@@ -29,12 +31,11 @@ class QuizViewModel @Inject constructor(
     idiomRepository: IdiomRepository,
     private val questionRepository: QuestionRepository,
     savedStateHandle: SavedStateHandle
-) : ViewModel() {
-    private val defaultDispatcher = Dispatchers.Default
+) : ViewModel(), QuestionGenerator by QuestionGeneratorImpl() {
     private val ioDispatcher = Dispatchers.IO
 
     private val category = savedStateHandle.get<Category>(Key.CATEGORY)
-    private val count = savedStateHandle.get<Int>(Key.COUNT) ?: ZERO
+    private val questionCount = savedStateHandle.get<Int>(Key.QUESTION_COUNT) ?: ZERO
 
     private val idioms = when(category) {
         Category.All -> idiomRepository.allIdioms()
@@ -48,7 +49,7 @@ class QuizViewModel @Inject constructor(
         try {
             withContext(ioDispatcher) {
                 idioms.firstOrNull()?.let { idioms ->
-                    questionRepository.deleteAndInsert(generateQuestions(idioms))
+                    questionRepository.deleteAndInsert(generateQuestions(idioms, questionCount))
                 }
             }
 
@@ -89,43 +90,6 @@ class QuizViewModel @Inject constructor(
         initialValue = QuizState.Progress.Loading
     )
 
-    private suspend fun generateQuestions(idioms: List<Idiom>): List<DomainModel> =
-        withContext(defaultDispatcher) {
-            require(count > ZERO)
-
-            val entities = mutableListOf<Entity>()
-
-            idioms.shuffled().take(count).forEachIndexed { index, idiom ->
-                val options = idioms
-                    .shuffled()
-                    .filterNot { it == idiom }
-                    .take(OPTION_COUNT.dec())
-                    .map { "${it.koreanCharacters} ${it.chineseCharacters}" }
-                    .toMutableList()
-
-                val correctAnswer = Random().nextInt(OPTION_COUNT)
-
-                options.add(correctAnswer, "${idiom.koreanCharacters} ${idiom.chineseCharacters}")
-
-                val entity = Entity(
-                    index = index,
-                    answer = null,
-                    correctAnswer = correctAnswer,
-                    isSolved = false,
-                    options = options,
-                    text = idiom.description
-                )
-
-                entities.add(entity)
-            }
-
-            entities.also {
-                withContext(ioDispatcher) {
-                    questionRepository.deleteAndInsert(it)
-                }
-            }
-        }
-
     fun score(content: QuizState.Progress.Content) {
         val questionsState = content.questionsState.map {
             val question = it.question.copy(answer = it.answer)
@@ -139,6 +103,6 @@ class QuizViewModel @Inject constructor(
     }
 
     companion object {
-
+        private const val PERFECT_SCORE = 100
     }
 }
