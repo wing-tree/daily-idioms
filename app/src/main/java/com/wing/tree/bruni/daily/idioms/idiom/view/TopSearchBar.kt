@@ -5,7 +5,8 @@ import android.view.ViewTreeObserver
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -31,15 +32,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.wing.tree.bruni.daily.idioms.R
 import com.wing.tree.bruni.daily.idioms.constant.EMPTY
-import com.wing.tree.bruni.daily.idioms.constant.ONE
 import com.wing.tree.bruni.daily.idioms.constant.Keyboard
+import com.wing.tree.bruni.daily.idioms.constant.ONE
 import com.wing.tree.bruni.daily.idioms.extension.paddingStart
-import com.wing.tree.bruni.daily.idioms.idiom.state.IdiomState
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 internal fun TopSearchBar(
-    state: IdiomState,
+    title: String,
     onQueryTextChanged: (String) -> Unit,
     onTextFieldVisibilityChanged: (isTextFieldVisible: Boolean) -> Unit,
     onBackPressed: () -> Unit
@@ -80,14 +80,11 @@ internal fun TopSearchBar(
                         fadeIn(tween(delayMillis = delayMillis)),
                 exit = fadeOut() + shrinkHorizontally()
             ) {
-                when (state) {
-                    is IdiomState.Content -> Text(
-                        text = state.title,
-                        overflow = TextOverflow.Visible,
-                        maxLines = ONE
-                    )
-                    else -> Unit
-                }
+                Text(
+                    text = title,
+                    overflow = TextOverflow.Visible,
+                    maxLines = ONE
+                )
             }
         },
         navigationIcon = {
