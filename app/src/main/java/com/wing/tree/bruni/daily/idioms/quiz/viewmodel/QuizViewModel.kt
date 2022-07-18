@@ -5,10 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wing.tree.bruni.daily.idioms.constant.Category
 import com.wing.tree.bruni.daily.idioms.constant.Key
-import com.wing.tree.bruni.daily.idioms.constant.OPTION_COUNT
 import com.wing.tree.bruni.daily.idioms.constant.ZERO
+import com.wing.tree.bruni.daily.idioms.domain.extension.float
 import com.wing.tree.bruni.daily.idioms.domain.extension.notZero
-import com.wing.tree.bruni.daily.idioms.domain.model.Idiom
 import com.wing.tree.bruni.daily.idioms.domain.repository.IdiomRepository
 import com.wing.tree.bruni.daily.idioms.domain.repository.QuestionRepository
 import com.wing.tree.bruni.daily.idioms.quiz.delegate.QuestionGenerator
@@ -16,15 +15,13 @@ import com.wing.tree.bruni.daily.idioms.quiz.delegate.QuestionGeneratorImpl
 import com.wing.tree.bruni.daily.idioms.quiz.model.Question
 import com.wing.tree.bruni.daily.idioms.quiz.state.QuestionState
 import com.wing.tree.bruni.daily.idioms.quiz.state.QuizState
+import com.wing.tree.bruni.daily.idioms.quiz.state.ResultState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 import java.io.IOException
-import java.util.*
 import javax.inject.Inject
-import com.wing.tree.bruni.daily.idioms.data.entity.Question as Entity
-import com.wing.tree.bruni.daily.idioms.domain.model.Question as DomainModel
 
 @HiltViewModel
 class QuizViewModel @Inject constructor(
@@ -91,15 +88,20 @@ class QuizViewModel @Inject constructor(
     )
 
     fun score(content: QuizState.Progress.Content) {
-        val questionsState = content.questionsState.map {
+        val resultsState = content.questionsState.map {
             val question = it.question.copy(answer = it.answer)
 
-            it.copy(question = question)
+            ResultState(question.index, question)
         }
 
-        val score = content.count
+        val score = resultsState.count { it.isCorrectAnswer }
+            .div(content.count)
+            .times(PERFECT_SCORE)
 
-        result.value = QuizState.Result.Content(questionsState)
+        result.value = QuizState.Result.Content(
+            resultsState = resultsState,
+            score = score.float
+        )
     }
 
     companion object {
