@@ -91,7 +91,7 @@ class QuizViewModel @Inject constructor(
         val resultsState = content.questionsState.map {
             val question = it.question.copy(answer = it.answer)
 
-            ResultState(question.index, question)
+            ResultState(question)
         }
 
         val score = resultsState.count { it.isCorrectAnswer }
