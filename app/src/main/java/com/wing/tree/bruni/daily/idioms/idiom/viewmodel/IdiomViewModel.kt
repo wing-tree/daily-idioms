@@ -51,7 +51,7 @@ class IdiomViewModel @Inject constructor(
 
     val state: StateFlow<IdiomState> = idioms.map {
         try {
-            IdiomState.Content(it)
+            IdiomState.Content(it.toImmutableList())
         } catch(ioException: IOException) {
             IdiomState.Error(ioException)
         }
