@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.wing.tree.bruni.daily.idioms.R
 import com.wing.tree.bruni.daily.idioms.domain.extension.float
 import com.wing.tree.bruni.daily.idioms.domain.extension.half
+import com.wing.tree.bruni.daily.idioms.domain.model.Idiom
 import com.wing.tree.bruni.daily.idioms.quiz.model.Question
 import com.wing.tree.bruni.daily.idioms.quiz.state.QuestionState
 import com.wing.tree.bruni.daily.idioms.quiz.state.QuizState
@@ -145,7 +146,7 @@ private fun Question(
 private fun Option(
     modifier: Modifier,
     index: Int,
-    option: String,
+    option: Idiom,
     selected: Boolean,
     onClick: (Int) -> Unit
 ) {
@@ -155,7 +156,7 @@ private fun Option(
         modifier = modifier.clickable { onClick(index) },
         color = color
     ) {
-        Text(text = option)
+        Text(text = "${option.koreanCharacters} ${option.chineseCharacters}")
     }
 }
 

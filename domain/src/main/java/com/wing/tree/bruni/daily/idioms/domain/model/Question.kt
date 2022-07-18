@@ -1,10 +1,12 @@
 package com.wing.tree.bruni.daily.idioms.domain.model
 
+import kotlinx.collections.immutable.ImmutableList
+
 abstract class Question {
     abstract val index: Int
     abstract val answer: Int?
     abstract val correctAnswer: Int
     abstract val isSolved: Boolean
-    abstract val options: List<String>
+    abstract val options: ImmutableList<Idiom>
     abstract val text: String
 }
