@@ -20,6 +20,7 @@ internal fun Quiz(modifier: Modifier, state: QuizState, onDoneClick: (QuizState.
                 modifier = Modifier.fillMaxSize(),
                 result = state
             )
+            is QuizState.Commentary -> Unit
         }
     }
 }
