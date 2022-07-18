@@ -84,10 +84,9 @@ private fun Idiom(
     }
 
     val tint = remember {
-        val initialValue = if (idiom.my) {
-            Color.Cyan
-        } else {
-            Color.Gray
+        val initialValue = when(idiom.my) {
+            true -> Color.Cyan
+            false -> Color.Gray
         }
 
         Animatable(
@@ -97,13 +96,12 @@ private fun Idiom(
     }
 
     LaunchedEffect(idiom.my) {
-        val targetValue = if (idiom.my) {
-            Color.Cyan
-        } else {
-            Color.Gray
+        val targetValue = when(idiom.my) {
+            true -> Color.Cyan
+            false -> Color.Gray
         }
 
-        tint.animateTo(targetValue, tween(200))
+        tint.animateTo(targetValue, tween(83))
     }
 
     Card(
