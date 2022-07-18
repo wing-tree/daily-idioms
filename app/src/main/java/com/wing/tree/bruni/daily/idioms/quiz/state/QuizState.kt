@@ -27,9 +27,9 @@ sealed interface QuizState {
 
     sealed interface Commentary : QuizState {
         object Loading : Commentary
-        data class Content(val questionsState: List<QuestionState>) : Commentary {
-            val count = questionsState.count()
-            val currentQuestionState: QuestionState get() = questionsState[currentIndex]
+        data class Content(val commentariesState: List<CommentaryState>) : Commentary {
+            val count = commentariesState.count()
+            val currentCommentaryState: CommentaryState get() = commentariesState[currentIndex]
             var currentIndex by mutableStateOf(0)
         }
 
