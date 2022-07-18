@@ -101,7 +101,7 @@ private fun Idiom(
             false -> Color.Gray
         }
 
-        tint.animateTo(targetValue, tween(83))
+        tint.animateTo(targetValue, tween(116))
     }
 
     Card(
