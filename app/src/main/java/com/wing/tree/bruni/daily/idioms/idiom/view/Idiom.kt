@@ -25,7 +25,7 @@ import com.wing.tree.bruni.daily.idioms.idiom.HangulJamo.jamo
 import com.wing.tree.bruni.daily.idioms.idiom.state.IdiomState
 
 @Composable
-internal fun Idioms(
+internal fun Idiom(
     modifier: Modifier,
     state: IdiomState,
     queryText: String,
