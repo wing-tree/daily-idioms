@@ -40,14 +40,14 @@ class QuizFragment : Fragment() {
                             val towards =  AnimatedContentScope.SlideDirection.Left
 
                             when(state) {
-                                is QuizState.Result ->  slideIntoContainer(
+                                is QuizState.Progress -> EnterTransition.None with ExitTransition.None
+                                is QuizState.Result, is QuizState.Commentary ->  slideIntoContainer(
                                     towards = towards,
                                     animationSpec = tween()
                                 ) with slideOutOfContainer(
                                     towards = towards,
                                     animationSpec = tween()
                                 )
-                                is QuizState.Progress -> EnterTransition.None with ExitTransition.None
                             }
                         }
                     ) { targetState ->
