@@ -43,7 +43,7 @@ class IdiomFragment : Fragment() {
                         Scaffold(
                             topBar = {
                                 TopSearchBar(
-                                    state = state,
+                                    title = viewModel.title,
                                     onQueryTextChanged = { queryText = it },
                                     onTextFieldVisibilityChanged = { isTextFieldVisible ->
                                         if (isTextFieldVisible) {
@@ -54,7 +54,7 @@ class IdiomFragment : Fragment() {
                                 )
                             }
                         ) { paddingValues ->
-                            Idioms(
+                            Idiom(
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .padding(paddingValues),
