@@ -11,6 +11,7 @@ import com.wing.tree.bruni.daily.idioms.domain.repository.IdiomRepository
 import com.wing.tree.bruni.daily.idioms.constant.Category
 import com.wing.tree.bruni.daily.idioms.idiom.state.IdiomState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -29,7 +30,8 @@ class IdiomViewModel @Inject constructor(
     private val ioDispatcher = Dispatchers.IO
 
     private val category = savedStateHandle.get<Category>(Key.CATEGORY)
-    private val title = with(application) {
+
+    internal val title = with(application) {
         when(category) {
             Category.All -> getString(R.string.all_idioms)
             Category.CivilServiceExamination -> getString(R.string.civil_service_examination_idioms)
@@ -49,7 +51,7 @@ class IdiomViewModel @Inject constructor(
 
     val state: StateFlow<IdiomState> = idioms.map {
         try {
-            IdiomState.Content(title, it)
+            IdiomState.Content(it)
         } catch(ioException: IOException) {
             IdiomState.Error(ioException)
         }
