@@ -8,5 +8,4 @@ data class CommentaryState(
     val isHomeVisible: Boolean
 ) {
     val index: Int = question.index
-    val answer: Int? = question.answer
 }
