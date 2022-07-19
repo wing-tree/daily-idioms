@@ -7,21 +7,20 @@ import com.wing.tree.bruni.daily.idioms.data.constant.Category.CIVIL_SERVICE_EXA
 import com.wing.tree.bruni.daily.idioms.data.constant.Category.SAT
 import com.wing.tree.bruni.daily.idioms.data.constant.TRUE
 import com.wing.tree.bruni.daily.idioms.data.entity.Idiom
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface IdiomDao {
     @Query("SELECT * FROM idiom")
-    fun allIdioms(): Flow<List<Idiom>>
+    suspend fun allIdioms(): List<Idiom>
 
     @Query("SELECT * FROM idiom WHERE category = $BOTH OR category = $CIVIL_SERVICE_EXAMINATION")
-    fun civilServiceExaminationIdioms(): Flow<List<Idiom>>
+    suspend  fun civilServiceExaminationIdioms(): List<Idiom>
 
     @Query("SELECT * FROM idiom WHERE my = $TRUE")
-    fun myIdioms(): Flow<List<Idiom>>
+    suspend fun myIdioms(): List<Idiom>
 
     @Query("SELECT * FROM idiom WHERE category = $BOTH OR category = $SAT")
-    fun satIdioms(): Flow<List<Idiom>>
+    suspend fun satIdioms(): List<Idiom>
 
     @Query("UPDATE idiom SET my = :my WHERE id = :id")
     fun updateMy(id: Int, my: Boolean)

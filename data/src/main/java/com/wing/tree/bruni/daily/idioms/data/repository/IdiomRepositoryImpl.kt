@@ -7,23 +7,23 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class IdiomRepositoryImpl @Inject constructor(private val dataSource: IdiomDataSource) : IdiomRepository {
-    override fun allIdioms(): Flow<List<Idiom>> {
+    override suspend fun allIdioms(): List<Idiom> {
         return dataSource.allIdioms()
     }
 
-    override fun civilServiceExaminationIdioms(): Flow<List<Idiom>> {
+    override suspend fun civilServiceExaminationIdioms(): List<Idiom> {
         return dataSource.civilServiceExaminationIdioms()
     }
 
-    override fun myIdioms(): Flow<List<Idiom>> {
+    override suspend fun myIdioms(): List<Idiom> {
         return dataSource.myIdioms()
     }
 
-    override fun satIdioms(): Flow<List<Idiom>> {
+    override suspend fun satIdioms(): List<Idiom> {
         return dataSource.satIdioms()
     }
 
-    override fun updateMy(id: Int, my: Boolean) {
+    override suspend fun updateMy(id: Int, my: Boolean) {
         dataSource.updateMy(id, my)
     }
 }

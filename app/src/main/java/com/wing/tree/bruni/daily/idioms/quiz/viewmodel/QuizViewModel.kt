@@ -35,20 +35,18 @@ class QuizViewModel @Inject constructor(
     private val category = savedStateHandle.get<Category>(Key.CATEGORY)
     private val questionCount = savedStateHandle.get<Int>(Key.QUESTION_COUNT) ?: ZERO
 
-    private val idioms = when(category) {
-        Category.All -> idiomRepository.allIdioms()
-        Category.CivilServiceExamination -> idiomRepository.civilServiceExaminationIdioms()
-        Category.My -> idiomRepository.myIdioms()
-        Category.Sat -> idiomRepository.satIdioms()
-        else -> throw IllegalArgumentException("category :$category")
-    }
-
     private val progress = flow {
         try {
             withContext(ioDispatcher) {
-                idioms.firstOrNull()?.let { idioms ->
-                    questionRepository.deleteAndInsert(generateQuestions(idioms, questionCount))
+                val idioms = when(category) {
+                    Category.All -> idiomRepository.allIdioms()
+                    Category.CivilServiceExamination -> idiomRepository.civilServiceExaminationIdioms()
+                    Category.My -> idiomRepository.myIdioms()
+                    Category.Sat -> idiomRepository.satIdioms()
+                    else -> throw IllegalArgumentException("category :$category")
                 }
+
+                questionRepository.deleteAndInsert(generateQuestions(idioms, questionCount))
             }
 
             val questionsState = with(questionRepository.allQuestions()) {
