@@ -5,10 +5,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.wing.tree.bruni.daily.idioms.R
+import com.wing.tree.bruni.daily.idioms.constant.Category
 import com.wing.tree.bruni.daily.idioms.constant.Key
 import com.wing.tree.bruni.daily.idioms.domain.model.Idiom
 import com.wing.tree.bruni.daily.idioms.domain.repository.IdiomRepository
-import com.wing.tree.bruni.daily.idioms.constant.Category
 import com.wing.tree.bruni.daily.idioms.idiom.state.IdiomState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toImmutableList
