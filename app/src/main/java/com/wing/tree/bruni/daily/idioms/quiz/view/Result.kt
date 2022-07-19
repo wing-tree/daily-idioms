@@ -15,13 +15,17 @@ import com.wing.tree.bruni.daily.idioms.quiz.state.QuizState
 @Composable
 internal fun Result(
     modifier: Modifier,
-    result: QuizState.Result
+    result: QuizState.Result,
+    onHomeClick: () -> Unit,
+    onCommentaryClick: (QuizState.Result.Content) -> Unit
 ) {
     when(result) {
         is QuizState.Result.Loading -> Unit
         is QuizState.Result.Content -> ResultContent(
             modifier = modifier,
-            content = result
+            content = result,
+            onHomeClick = onHomeClick,
+            onCommentaryClick = onCommentaryClick
         )
         is QuizState.Result.Error -> Unit
     }
@@ -31,7 +35,9 @@ internal fun Result(
 @Composable
 private fun ResultContent(
     modifier: Modifier,
-    content: QuizState.Result.Content
+    content: QuizState.Result.Content,
+    onHomeClick: () -> Unit,
+    onCommentaryClick: (QuizState.Result.Content) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -59,12 +65,8 @@ private fun ResultContent(
         bottomBar = {
             BottomBar(
                 modifier = Modifier.fillMaxWidth(),
-                onHomeClick = {
-
-                },
-                onCommentaryClick = {
-
-                }
+                onHomeClick = onHomeClick,
+                onCommentaryClick = { onCommentaryClick(content) }
             )
         }
     )
@@ -78,7 +80,7 @@ private fun BottomBar(
 ) {
     Surface(modifier = modifier) {
         Row(modifier = Modifier.fillMaxWidth()) {
-            Button(
+            OutlinedButton(
                 modifier = Modifier
                     .weight(1.0F)
                     .height(48.dp),
