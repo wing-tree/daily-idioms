@@ -54,8 +54,12 @@ class QuizFragment : Fragment() {
                         Quiz(
                             modifier = Modifier.fillMaxSize(),
                             state = targetState,
+                            onBackPressed = { popBackStack() },
+                            onCommentaryClick = { viewModel.seeCommentary(it) },
                             onDoneClick = { viewModel.score(it) },
-                            onBackPressed = { popBackStack() }
+                            onHomeClick = {
+
+                            }
                         )
                     }
                 }
