@@ -13,6 +13,7 @@ import com.wing.tree.bruni.daily.idioms.domain.repository.QuestionRepository
 import com.wing.tree.bruni.daily.idioms.quiz.delegate.QuestionGenerator
 import com.wing.tree.bruni.daily.idioms.quiz.delegate.QuestionGeneratorImpl
 import com.wing.tree.bruni.daily.idioms.quiz.model.Question
+import com.wing.tree.bruni.daily.idioms.quiz.state.CommentaryState
 import com.wing.tree.bruni.daily.idioms.quiz.state.QuestionState
 import com.wing.tree.bruni.daily.idioms.quiz.state.QuizState
 import com.wing.tree.bruni.daily.idioms.quiz.state.ResultState
@@ -71,9 +72,12 @@ class QuizViewModel @Inject constructor(
     }
 
     private val result = MutableStateFlow<QuizState.Result>(QuizState.Result.Loading)
+    private val commentary = MutableStateFlow<QuizState.Commentary>(QuizState.Commentary.Loading)
 
-    val state: StateFlow<QuizState> = combine(progress, result) { progress, result ->
+    val state: StateFlow<QuizState> = combine(progress, result, commentary) { progress, result, commentary ->
         when {
+            commentary is QuizState.Commentary.Content -> commentary
+            commentary is QuizState.Commentary.Error -> commentary
             result is QuizState.Result.Content -> result
             result is QuizState.Result.Error -> result
             progress is QuizState.Progress.Content -> progress
@@ -100,6 +104,25 @@ class QuizViewModel @Inject constructor(
         result.value = QuizState.Result.Content(
             resultsState = resultsState,
             score = score.float
+        )
+    }
+
+    fun seeCommentary(content: QuizState.Result.Content) {
+        val commentariesState = with(content.resultsState) {
+            map {
+                val isPreviousVisible = it.index.notZero
+                val isHomeVisible = it.index == lastIndex
+
+                CommentaryState(
+                    question = it.question,
+                    isPreviousVisible = isPreviousVisible,
+                    isHomeVisible = isHomeVisible
+                )
+            }
+        }
+
+        commentary.value = QuizState.Commentary.Content(
+            commentariesState = commentariesState
         )
     }
 
