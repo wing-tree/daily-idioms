@@ -74,7 +74,7 @@ private fun Idiom(
             val lastIndex = chineseMeanings.lastIndex
 
             chineseMeanings.forEachIndexed { index, chineseMeaning ->
-                append("${chineseCharacters[index]} : $chineseMeaning")
+                append("${chineseCharacters[index]}: $chineseMeaning")
 
                 if (index < lastIndex) {
                     append(NEWLINE)
