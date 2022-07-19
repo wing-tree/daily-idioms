@@ -1,21 +1,28 @@
 package com.wing.tree.bruni.daily.idioms.quiz.view
 
 import androidx.compose.animation.*
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.wing.tree.bruni.daily.idioms.R
+import com.wing.tree.bruni.daily.idioms.constant.NEWLINE
 import com.wing.tree.bruni.daily.idioms.domain.extension.float
 import com.wing.tree.bruni.daily.idioms.domain.extension.half
+import com.wing.tree.bruni.daily.idioms.domain.model.Idiom
+import com.wing.tree.bruni.daily.idioms.domain.model.Option
 import com.wing.tree.bruni.daily.idioms.quiz.model.Question
 import com.wing.tree.bruni.daily.idioms.quiz.state.CommentaryState
 import com.wing.tree.bruni.daily.idioms.quiz.state.QuizState
@@ -122,11 +129,16 @@ private fun Question(
         Text(text = question.text)
 
         question.options.forEachIndexed { index, option ->
-            Option(
-                modifier = Modifier,
-                option = option,
-                selected = question.answer == index
+            ExpandableCard(
+                option,
+                { option.expanded = option.expanded.not() },
+                option.expanded
             )
+//            Option(
+//                modifier = Modifier,
+//                option = option,
+//                selected = question.answer == index
+//            )
         }
     }
 }
@@ -134,16 +146,32 @@ private fun Question(
 @Composable
 private fun Option(
     modifier: Modifier,
-    option: String,
+    option: Idiom,
     selected: Boolean
 ) {
     val color = if (selected) Color.Blue else Color.Gray
+    val chineseMeaningsText = buildString {
+        with(option) {
+            val lastIndex = chineseMeanings.lastIndex
+
+            chineseMeanings.forEachIndexed { index, chineseMeaning ->
+                append("${chineseCharacters[index]}: $chineseMeaning")
+
+                if (index < lastIndex) {
+                    append(NEWLINE)
+                }
+            }
+        }
+    }
 
     Surface(
         modifier = modifier,
         color = color
     ) {
-        Text(text = option)
+        Column {
+            Text(text = "${option.koreanCharacters} (${option.chineseCharacters})")
+            Text(text = option.description)
+        }
     }
 }
 
@@ -169,7 +197,9 @@ private fun BottomBar(
             AnimatedVisibility(visible = commentaryState.isPreviousVisible) {
                 Row(modifier = Modifier.width(width)) {
                     OutlinedButton(
-                        modifier = Modifier.weight(1.0F).height(48.dp),
+                        modifier = Modifier
+                            .weight(1.0F)
+                            .height(48.dp),
                         onClick = onPreviousClick
                     ) {
                         Text(text = stringResource(id = R.string.previous))
@@ -196,6 +226,146 @@ private fun BottomBar(
                     Text(text = stringResource(id = R.string.next))
                 }
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ExpandableCard(
+    option: Option,
+    onCardArrowClick: () -> Unit,
+    expanded: Boolean,
+) {
+    val transitionState = remember {
+        MutableTransitionState(expanded).apply {
+            targetState = expanded.not()
+        }
+    }
+
+    val transition = updateTransition(transitionState, label = null)
+
+    val cardBgColor by transition.animateColor({
+        tween(durationMillis = 300)
+    }, label = "bgColorTransition") {
+        if (expanded) Color.Yellow else Color.Green
+    }
+    val cardPaddingHorizontal by transition.animateDp({
+        tween(durationMillis = 300)
+    }, label = "paddingTransition") {
+        if (expanded) 48.dp else 24.dp
+    }
+    val cardElevation by transition.animateDp({
+        tween(durationMillis = 300)
+    }, label = "elevationTransition") {
+        if (expanded) 24.dp else 4.dp
+    }
+    val cardRoundedCorners by transition.animateDp({
+        tween(
+            durationMillis = 300,
+            easing = FastOutSlowInEasing
+        )
+    }, label = "cornersTransition") {
+        if (expanded) 0.dp else 16.dp
+    }
+    val arrowRotationDegree by transition.animateFloat({
+        tween(durationMillis = 300)
+    }, label = "rotationDegreeTransition") {
+        if (expanded) 0f else 180f
+    }
+
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = cardBgColor
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = cardElevation
+        ),
+        shape = RoundedCornerShape(cardRoundedCorners),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                horizontal = cardPaddingHorizontal,
+                vertical = 8.dp
+            )
+    ) {
+        Column {
+            Box {
+                CardArrow(
+                    degrees = arrowRotationDegree,
+                    onClick = onCardArrowClick
+                )
+                CardTitle(title = option.koreanCharacters)
+            }
+            ExpandableContent(visible = expanded)
+        }
+    }
+}
+
+@Composable
+fun CardArrow(
+    degrees: Float,
+    onClick: () -> Unit
+) {
+    IconButton(
+        onClick = onClick,
+        content = {
+            Icon(
+                imageVector = Icons.Rounded.ArrowDropDown,
+                contentDescription = "Expandable Arrow",
+                modifier = Modifier.rotate(degrees),
+            )
+        }
+    )
+}
+
+@Composable
+fun CardTitle(title: String) {
+    Text(
+        text = title,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        textAlign = TextAlign.Center,
+    )
+
+}
+
+@Composable
+fun ExpandableContent(
+    visible: Boolean = true,
+) {
+    val enterFadeIn = remember {
+        fadeIn(
+            animationSpec = TweenSpec(
+                easing = FastOutLinearInEasing
+            )
+        )
+    }
+    val enterExpand = remember {
+        expandVertically(animationSpec = tween())
+    }
+    val exitFadeOut = remember {
+        fadeOut(
+            animationSpec = TweenSpec(
+                easing = LinearOutSlowInEasing
+            )
+        )
+    }
+    val exitCollapse = remember {
+        shrinkVertically(animationSpec = tween())
+    }
+    AnimatedVisibility(
+        visible = visible,
+        enter = enterExpand + enterFadeIn,
+        exit = exitCollapse + exitFadeOut
+    ) {
+        Column(modifier = Modifier.padding(8.dp)) {
+            Spacer(modifier = Modifier.heightIn(100.dp))
+            Text(
+                text = "Expandable content here",
+                textAlign = TextAlign.Center
+            )
         }
     }
 }
