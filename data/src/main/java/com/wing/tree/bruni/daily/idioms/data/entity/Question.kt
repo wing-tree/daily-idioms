@@ -3,6 +3,7 @@ package com.wing.tree.bruni.daily.idioms.data.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.wing.tree.bruni.daily.idioms.domain.model.Option
 import com.wing.tree.bruni.daily.idioms.domain.model.Question
 import kotlinx.collections.immutable.ImmutableList
 
@@ -15,6 +16,6 @@ data class Question(
     override val correctAnswer: Int,
     @ColumnInfo(name = "is_solved")
     override val isSolved: Boolean,
-    override val options: ImmutableList<Idiom>,
+    override val options: ImmutableList<Option>,
     override val text: String
 ) : Question()

@@ -3,6 +3,7 @@ package com.wing.tree.bruni.daily.idioms.quiz.delegate
 import com.wing.tree.bruni.daily.idioms.constant.OPTION_COUNT
 import com.wing.tree.bruni.daily.idioms.constant.ZERO
 import com.wing.tree.bruni.daily.idioms.domain.model.Idiom
+import com.wing.tree.bruni.daily.idioms.quiz.model.Option
 import com.wing.tree.bruni.daily.idioms.quiz.model.Question
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
@@ -22,11 +23,12 @@ class QuestionGeneratorImpl : QuestionGenerator {
                 .shuffled()
                 .filterNot { it == idiom }
                 .take(OPTION_COUNT.dec())
+                .map { Option.from(it) }
                 .toMutableList()
 
             val correctAnswer = Random().nextInt(OPTION_COUNT)
 
-            options.add(correctAnswer, idiom)
+            options.add(correctAnswer, Option.from(idiom))
 
             val question = Question(
                 index = index,

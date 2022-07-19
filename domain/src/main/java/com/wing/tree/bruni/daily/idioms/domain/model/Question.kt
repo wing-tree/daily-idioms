@@ -7,6 +7,6 @@ abstract class Question {
     abstract val answer: Int?
     abstract val correctAnswer: Int
     abstract val isSolved: Boolean
-    abstract val options: ImmutableList<Idiom>
+    abstract val options: ImmutableList<Option>
     abstract val text: String
 }
