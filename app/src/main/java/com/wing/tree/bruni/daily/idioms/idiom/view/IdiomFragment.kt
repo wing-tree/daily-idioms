@@ -61,7 +61,9 @@ class IdiomFragment : Fragment() {
                                 state = state,
                                 queryText = queryText,
                                 onIconButtonClick = { idiom ->
-                                    viewModel.updateMy(idiom)
+                                    idiom.isMyIdiom = idiom.isMyIdiom.not().also {
+                                        viewModel.updateMy(idiom.id, it)
+                                    }
                                 }
                             )
                         }

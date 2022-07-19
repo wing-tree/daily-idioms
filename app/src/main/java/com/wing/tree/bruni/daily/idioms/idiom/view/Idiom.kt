@@ -18,10 +18,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.wing.tree.bruni.daily.idioms.R
 import com.wing.tree.bruni.daily.idioms.constant.NEWLINE
-import com.wing.tree.bruni.daily.idioms.domain.model.Idiom
 import com.wing.tree.bruni.daily.idioms.idiom.HangulInitialConsonant.hangulInitialConsonant
 import com.wing.tree.bruni.daily.idioms.idiom.HangulInitialConsonant.isHangulConsonant
 import com.wing.tree.bruni.daily.idioms.idiom.HangulJamo.jamo
+import com.wing.tree.bruni.daily.idioms.idiom.model.Idiom
 import com.wing.tree.bruni.daily.idioms.idiom.state.IdiomState
 
 @Composable
@@ -56,6 +56,7 @@ private fun IdiomContent(
             Idiom(
                 modifier = Modifier.animateItemPlacement(),
                 idiom = idiom,
+                isMyIdiom = idiom.isMyIdiom,
                 onIconButtonClick = onIconButtonClick
             )
         }
@@ -67,6 +68,7 @@ private fun IdiomContent(
 private fun Idiom(
     modifier: Modifier,
     idiom: Idiom,
+    isMyIdiom: Boolean,
     onIconButtonClick: (Idiom) -> Unit
 ) {
     val chineseMeaningsText = buildString {
@@ -84,7 +86,7 @@ private fun Idiom(
     }
 
     val tint = remember {
-        val initialValue = when(idiom.my) {
+        val initialValue = when(isMyIdiom) {
             true -> Color.Cyan
             false -> Color.Gray
         }
@@ -95,8 +97,8 @@ private fun Idiom(
         )
     }
 
-    LaunchedEffect(idiom.my) {
-        val targetValue = when(idiom.my) {
+    LaunchedEffect(isMyIdiom) {
+        val targetValue = when(isMyIdiom) {
             true -> Color.Cyan
             false -> Color.Gray
         }
@@ -117,11 +119,7 @@ private fun Idiom(
                 Text(text = idiom.chineseCharacters)
             }
 
-            IconButton(
-                onClick = {
-                    onIconButtonClick(idiom)
-                }
-            ) {
+            IconButton(onClick = { onIconButtonClick(idiom) }) {
                 Icon(
                     painter = painterResource(R.drawable.ic_round_star_24),
                     contentDescription = null,

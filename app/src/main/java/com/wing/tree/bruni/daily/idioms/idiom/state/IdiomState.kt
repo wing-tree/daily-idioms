@@ -1,6 +1,6 @@
 package com.wing.tree.bruni.daily.idioms.idiom.state
 
-import com.wing.tree.bruni.daily.idioms.domain.model.Idiom
+import com.wing.tree.bruni.daily.idioms.idiom.model.Idiom
 import kotlinx.collections.immutable.ImmutableList
 
 sealed interface IdiomState {
