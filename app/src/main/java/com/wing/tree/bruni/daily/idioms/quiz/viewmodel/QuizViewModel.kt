@@ -57,7 +57,6 @@ class QuizViewModel @Inject constructor(
                     val isDoneVisible = it.index == lastIndex
 
                     QuestionState(
-                        index = question.index,
                         question = question,
                         isPreviousVisible = isPreviousVisible,
                         isDoneVisible = isDoneVisible
